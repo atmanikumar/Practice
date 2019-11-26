@@ -1,101 +1,101 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Speech Detection</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            background: #2196f3;
+            filter: blur(0.8);
+            display: flex;
+            height: 100vh;
+            align-items: center;
+            margin: 0;
+        }
+
+        .clock {
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            border: 10px solid #000;
+            margin: auto;
+            position: relative;
+        }
+
+        #hours {
+            position: fixed;
+            left: calc( 50% + 5px);
+            transform-origin: top left;
+            transform: translateY(0) rotate(180deg);
+            background: #000;
+            width: 8px;
+            height: 100px;
+            top: calc( 50% - 5px);
+            border-radius: 6px;
+        }
+
+        #minutes {
+            position: fixed;
+            left: calc( 50% + 4px);
+            transform-origin: top left;
+            transform: translateY(0) rotate(180deg);
+            background: #000;
+            width: 6px;
+            height: 130px;
+            top:calc( 50% - 4px);
+            border-radius: 6px;
+        }
+
+        #seconds {
+            position: fixed;
+            left: calc( 50% + 3px);
+            transform-origin: top left;
+            transform: translateY(0) rotate(180deg);
+            background: #000;
+            width: 4px;
+            height: 150px;
+            top: calc( 50% - 3px);
+            border-radius: 6px;
+        }
+        #circle{
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #000;
+            position: absolute;
+            top: calc( 50% - 12px);
+            left: calc( 50% - 9px);
+        }
+    </style>
 </head>
 
 <body>
-
-    <div class="words" contenteditable>
+    <div class='clock'>
+        <div id="hours"></div>
+        <div id="minutes"></div>
+        <div id="seconds"></div>
+        <div id="circle"></div>
     </div>
-
     <script>
-        /**
-         *  Speech recognition workaround application , Where you can speak to make a note :slightly_smiling_face:
-         */
+        const secondsElem = document.getElementById('seconds');
+        const hoursElem = document.getElementById('hours');
+        const minutesElem = document.getElementById('minutes');
 
-        window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        setInterval(()=>{
+            const date = new Date();
+            const secondsAngle = date.getSeconds() * 6;
+            const minutesAngle = (date.getMinutes() * 6) + .2 * date.getSeconds()
+            const hoursAngle = (date.getHours() * 30) + (.5 * date.getMinutes())
 
-
-        const recognition = new SpeechRecognition();
-        recognition.interimResults = true;
-        recognition.lang = 'en-US';
-
-        let p = document.createElement('p');
-        const words = document.querySelector('.words');
-        words.appendChild(p);
-
-        recognition.addEventListener('result', e => {
-            const transcript = Array.from(e.results)
-                .map(result => result[0])
-                .map(result => result.transcript)
-                .join('');
-
-
-            p.textContent = transcript;
-
-            if (e.results[0].isFinal) {
-                p = document.createElement('p');
-                words.appendChild(p);
-            }
-
-            console.log(transcript);
-
-        });
-
-
-        recognition.addEventListener('end', recognition.start);
-
-        recognition.start();
+            secondsElem.style.transform = `translateY(0) rotate(${180 + secondsAngle}deg)`;
+            minutesElem.style.transform = `translateY(0) rotate(${180 + minutesAngle}deg)`;
+            hoursElem.style.transform = `translateY(0) rotate(${180 + hoursAngle}deg)`;
+        },1000)
 
     </script>
-
-
-    <style>
-        html {
-            font-size: 10px;
-
-        }
-
-        body {
-            background: lightgreen;
-            font-family: 'helvwtica neue';
-            font-weight: 200;
-            font-size: 20px;
-        }
-
-        .words {
-            max-width: 500px;
-            margin: 50px auto;
-            background: white;
-            border-radius: 5px;
-            box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.1);
-            padding: 1rem 2rem 1rem 5rem;
-            background: -webkit-gradient(linear, 0 0, 0 100%, from(#d9eaf3), color-stop(4%, #fff)) 0 4px;
-            background-size: 100% 3rem;
-            position: relative;
-            line-height: 3rem;
-        }
-
-        p {
-            margin: 0 0 3rem;
-        }
-
-        .words:before {
-            content: '';
-            position: absolute;
-            width: 4px;
-            top: 0;
-            left: 30px;
-            bottom: 0;
-            border: 1px solid;
-            border-color: transparent #efe4e4;
-        }
-    </style>
-
 </body>
 
 </html>
